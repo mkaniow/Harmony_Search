@@ -1,6 +1,6 @@
 import sys
-from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QLineEdit, QLabel, QRadioButton, QTableWidget
-import aha1
+from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QLineEdit, QLabel, QRadioButton, QTableWidget, QTableWidgetItem, QMessageBox
+import HS_algorithm
 
 
 class App(QMainWindow):
@@ -12,12 +12,6 @@ class App(QMainWindow):
         self.width = 580
         self.height = 315
         self.setStyleSheet("background: #6699CC;")
-        self.iteration = 0
-        self.HMS = 0
-        self.HMRC = 0.0
-        self.PAR = 0.0
-        self.R = 0.0
-        self.function = ""
         self.initUI()
         
     def create_label(self, name, x, y):
@@ -209,47 +203,78 @@ class App(QMainWindow):
                 self.max4.show()
                 self.max5.show()
 
-    def createTable(self, cords, memory_len):
-        self.cords_value = cords
-        self.memory_len_value = memory_len
+    def createTable(self, memory):
+        self.cords_value = len(memory[0][0])
+        self.memory_len_value = len(memory)
+
         self.tableWidget = QTableWidget()
         self.tableWidget.setRowCount(self.memory_len_value)
-        self.tableWidget.setColumnCount(self.cords_value)
-        #self.tableWidget.setItem(self.memory_len_value, self.cords_value, QTableWidgetItem("siema"))
-        #for cord in range(self.cords_value):
-        #    for mem in range(self.memory_len_value):
-        #        self.tableWidget.setItem(cord, mem, QTableWidgetItem("siema"))
+        self.tableWidget.setColumnCount(self.cords_value + 1)
+        
+        label_names = [f'X{i+1}' for i in range(len(memory[0][0]))]
+        label_names.append('result')
+        
+        for i in range(len(memory)):
+            for j in range(len(memory[i][0])):
+                self.tableWidget.setItem(i, j, QTableWidgetItem(str(memory[i][0][j])))
+        
+        for i in range(len(memory)):
+            self.tableWidget.setItem(i - 1, len(memory[0][0]) + len(memory[0][0]) + 1, QTableWidgetItem(str(memory[i][1])))
+        
+        for i in range(len(memory[0][0])):
+            self.tableWidget.setHorizontalHeaderLabels(label_names)
+        
         self.tableWidget.show()
 
+    def warning(self):
+        self.warning_box = QMessageBox()
+        self.warning_box.setWindowTitle("WARNING!")
+        self.warning_box.setText("Please check your inputs")
+        self.warning_box.setIcon(QMessageBox.Warning)
+        self.warning_box.exec_()
+
     def on_click(self):
-        #wstaw tu kurwa guard że jak te wartosci beda null to zeby program sie nie wyjebal
-        iteration_value = int(self.iteration.text())
-        hms_value = int(self.HMS.text())
-        hmrc_value = float(self.HMRC.text())
-        par_value = float(self.PAR.text())
-        r_value = float(self.R.text())
-        function_value = self.function.text()
+        try:
+            iteration_value = int(self.iteration.text())
+            hms_value = int(self.HMS.text())
+            hmrc_value = float(self.HMRC.text())
+            par_value = float(self.PAR.text())
+            r_value = float(self.R.text())
+            function_value = self.function.text()
+        except:
+            self.warning()
 
         if self.rb2.isChecked():
-            qweasd = aha1.Policz(iteration_value, hms_value, hmrc_value, par_value, r_value, function_value, 2, int(self.min1.text()), int(self.max1.text()), int(self.min2.text()), int(self.max2.text()))
-            #qwe = aha1.Policz(100, 10, 0.8, 0.5, 1, "(x1+2*x2-7)^2+(2*x1+x2-5)^2", 2, -5, 5, -5, 5)
-            print(qweasd.memory)
-            self.createTable(2, hms_value)
-            del qweasd
+            try:
+                self.solve_for_2 = HS_algorithm.Calculate(iteration_value, hms_value, hmrc_value, par_value, r_value, function_value, 2, int(self.min1.text()), int(self.max1.text()), int(self.min2.text()), int(self.max2.text()))
+                self.createTable(self.solve_for_2.memory)
+            except:
+                self.warning()
         elif self.rb3.isChecked():
-            qwe2 = aha1.Policz(int(self.iteration.text()), int(self.HMS.text()), float(self.HMRC.text()), float(self.PAR.text()), float(self.R.text()), str(self.function.text()), 3, self.min1, self.max1, self.min2, self.max2, self.min3, self.max3)
-            print(qwe2)
+            try:
+                self.solve_for_3 = HS_algorithm.Calculate(iteration_value, hms_value, hmrc_value, par_value, r_value, function_value, 3, int(self.min1.text()), int(self.max1.text()), int(self.min2.text()), int(self.max2.text()), int(self.min3.text()), int(self.max3.text()))
+                self.createTable(self.solve_for_3.memory)
+            except:
+                self.warning()    
         elif self.rb4.isChecked():
-            qwe3 = aha1.Policz(int(self.iteration.text()), int(self.HMS.text()), float(self.HMRC.text()), float(self.PAR.text()), float(self.R.text()), str(self.function.text()), 4, self.min1, self.max1, self.min2, self.max2, self.min3, self.max3, self.min4, self.max4)
-            print(qwe3)
+            try:
+                self.solve_for_4 = HS_algorithm.Calculate(iteration_value, hms_value, hmrc_value, par_value, r_value, function_value, 4, int(self.min1.text()), int(self.max1.text()), int(self.min2.text()), int(self.max2.text()), int(self.min3.text()), int(self.max3.text()), int(self.min4.text()), int(self.max4.text()))
+                self.createTable(self.solve_for_4.memory)
+            except:
+                self.warning()
         elif self.rb5.isChecked():
-            qwe4 = aha1.Policz(int(self.iteration.text()), int(self.HMS.text()), float(self.HMRC.text()), float(self.PAR.text()), float(self.R.text()), str(self.function.text()), 4, self.min1, self.max1, self.min2, self.max2, self.min3, self.max3, self.min4, self.max4, self.min5, self.max5)
-            print(qwe4)
-        else:
-            print("co jest? wtf")
+            try:
+                self.solve_for_5 = HS_algorithm.Calculate(iteration_value, hms_value, hmrc_value, par_value, r_value, function_value, 5, int(self.min1.text()), int(self.max1.text()), int(self.min2.text()), int(self.max2.text()), int(self.min3.text()), int(self.max3.text()), int(self.min4.text()), int(self.max4.text()), int(self.min5.text()), int(self.max5.text()))
+                self.createTable(self.solve_for_5.memory)
+            except:
+                self.warning()
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = App()
     sys.exit(app.exec_())
+
+# for help
+# (x1+2*x2-7)^2+(2*x1+x2-5)^2
+# (x1)^2+(x2)^2+(x3)^2
