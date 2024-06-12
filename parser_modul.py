@@ -17,7 +17,7 @@ class ReadFunction():
             's': ['i', 'n', 'math.sin'],
             'e': ['x', 'p', 'math.exp']
         }
-        memory_skip = {'o', 'p', 'i', 'n', 's'}
+        memory_skip = {'o', 'p', 'i', 'n', 's', 'x'}
         holder = list(function)
         funcion_list = []
         y = ''
@@ -49,7 +49,9 @@ class ReadFunction():
                     pass
                 else:
                     y = y + holder[i] 
-        funcion_list.append(y)
+        if y == '':
+            pass
+        else:
+            funcion_list.append(y)
         
         return funcion_list
-                

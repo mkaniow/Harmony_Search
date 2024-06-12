@@ -1,3 +1,5 @@
+import math
+
 class Solve():
     def solve(function, args):
         '''
@@ -27,6 +29,8 @@ class Solve():
         for i in range(len(function)):
             if function[i] in y:
                 final_function = final_function + str(y[function[i]])
+            elif isinstance(function[i], int):
+                raise Exception('Need more variables or misteke in inputed function')
             else:
                 final_function = final_function + function[i]
 
