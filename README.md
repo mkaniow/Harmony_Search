@@ -48,5 +48,8 @@ python main.py
 To start Harmony Search Algoritm need to fill all fields. At the end press Solve button and if evry field is correctly filled the program will start. 
 ## Screenshots
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+![](images/gui.png)
+![](images/plot.png)
+![](images/plot2.png)
+![](images/results.png)
 
